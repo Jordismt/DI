@@ -12,7 +12,7 @@ class Menu(QMainWindow):
         self.setWindowTitle('HealthMate')
         self.setGeometry(250, 250, 550, 850)
 
-        # Añadir estilos CSS a la aplicación
+        # Añadir estils CSS a la aplicació
         self.setStyleSheet(
             '''
             QMainWindow {
@@ -67,13 +67,15 @@ class Menu(QMainWindow):
         popup_menu = QMenu(self)
         popup_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; ')
 
-        popup_menu.addAction(exit_action)
-        popup_menu.addSeparator()
 
         # Crear 5 opciones para probar
         for i in range(5):
             action = QAction(f'Opción {i+1}', self)
             popup_menu.addAction(action)
+ 
+        popup_menu.addSeparator()
+        popup_menu.addAction(exit_action)
+
 
         popup_menu.aboutToShow.connect(lambda: self.adjustMenuHeight(popup_menu))
 

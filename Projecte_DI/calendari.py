@@ -18,7 +18,6 @@ class CalendarioApp(QMainWindow):
         # Agregar el widget de calendario
         self.calendario = QCalendarWidget()
         self.calendario.setFixedSize(250, 150)  # Establecer un tamaño fijo para el calendario
-        self.layout.addWidget(self.calendario)
         #Añadirlo al centro
         self.layout.addWidget(self.calendario, alignment=Qt.AlignHCenter)
 

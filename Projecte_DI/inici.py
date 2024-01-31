@@ -34,7 +34,7 @@ class Inici(QMainWindow):
 
         # Añadir la etiqueta del logo al layout
         layout.addWidget(logo_label)
-        layout.addStretch()  #Añadir espai per a separar els botons
+        layout.addStretch()  #Añadir espai per a separar els botons i posarlos al final bax de tot
 
         # Botón para iniciar sesión
         btn_login = QPushButton('Iniciar Sesión/Registrarse', self)
