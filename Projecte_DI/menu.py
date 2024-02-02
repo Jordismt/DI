@@ -87,7 +87,7 @@ class Menu(QMainWindow):
 
         # Menú para el icono del perfil
         profile_menu = QMenu(self)
-        profile_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; ')
+        profile_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; align:rigth ')
 
 
         profile_action = QAction(self)

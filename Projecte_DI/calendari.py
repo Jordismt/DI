@@ -23,7 +23,8 @@ class CalendarioApp(QMainWindow):
 
         # Agregar un botón para solicitar una cita
         self.button_pedir_cita = QPushButton('Pedir Cita', self)
-        self.layout.addWidget(self.button_pedir_cita)
+        self.button_pedir_cita.setFixedSize(self.calendario.width(), 20)
+        self.layout.addWidget(self.button_pedir_cita, alignment=Qt.AlignHCenter)
 
         #Añadir espai en blanc baix per a centrar el calendari dalt
         self.layout.addStretch()
