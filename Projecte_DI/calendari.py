@@ -2,8 +2,16 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
+import json
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from datetime import datetime
+
 
 class CalendarioApp(QMainWindow):
+    # Agregar la señal 'cita_agendada'
+    cita_agendada = Signal(QDate, str)
+
     def __init__(self):
         super().__init__()
 
@@ -17,8 +25,7 @@ class CalendarioApp(QMainWindow):
 
         # Agregar el widget de calendario
         self.calendario = QCalendarWidget()
-        self.calendario.setFixedSize(250, 150)  # Establecer un tamaño fijo para el calendario
-        #Añadirlo al centro
+        self.calendario.setFixedSize(400, 230)
         self.layout.addWidget(self.calendario, alignment=Qt.AlignHCenter)
 
         # Agregar un botón para solicitar una cita
@@ -26,7 +33,7 @@ class CalendarioApp(QMainWindow):
         self.button_pedir_cita.setFixedSize(self.calendario.width(), 20)
         self.layout.addWidget(self.button_pedir_cita, alignment=Qt.AlignHCenter)
 
-        #Añadir espai en blanc baix per a centrar el calendari dalt
+        # Añadir espacio en blanco abajo para centrar el calendario arriba
         self.layout.addStretch()
 
         # Conectar la señal selectionChanged del calendario a la función de verificación de citas
@@ -35,11 +42,13 @@ class CalendarioApp(QMainWindow):
         # Inicializar el contador de citas por día
         self.citas_por_dia = {}
 
+        # Inicializar el usuario logueado como None (nadie logueado)
+        self.usuario_logueado = None
+
         # Conectar el botón para solicitar una cita a la función correspondiente
         self.button_pedir_cita.clicked.connect(self.solicitarCita)
 
     def verificarCitas(self):
-
         # Obtener la fecha seleccionada
         fecha_seleccionada = self.calendario.selectedDate()
 
@@ -51,7 +60,7 @@ class CalendarioApp(QMainWindow):
         else:
             # Guardar la fecha actual para futuras comparaciones
             self.fecha_anterior = fecha_seleccionada
-            
+
     def solicitarCita(self):
         # Obtener la fecha seleccionada
         fecha_seleccionada = self.calendario.selectedDate()
@@ -59,5 +68,32 @@ class CalendarioApp(QMainWindow):
         # Incrementar el contador de citas para la fecha seleccionada
         self.citas_por_dia[fecha_seleccionada] = self.citas_por_dia.get(fecha_seleccionada, 0) + 1
 
-        QMessageBox.information(self, 'Cita Agendada', 'Se ha agendado una nueva cita para el día: {}'.format(fecha_seleccionada.toString("dd-MM-yyyy")))
-        
+        # Emitir la señal con la fecha y el usuario logueado
+        self.cita_agendada.emit(fecha_seleccionada, self.usuario_logueado)
+
+        # Mostrar información en el cuadro de texto
+        texto_cita = f'Nueva cita para el día {fecha_seleccionada.toString("dd-MM-yyyy")} por el usuario {self.usuario_logueado}\n'
+        self.cuadro_texto.append(texto_cita)
+
+        # Guardar los datos actualizados en el JSON
+        self.guardarCitasEnJSON()
+
+        QMessageBox.information(self, 'Cita Agendada',
+                                f'Se ha agendado una nueva cita para el día: {fecha_seleccionada.toString("dd-MM-yyyy")} '
+                                f'para el usuario: {self.usuario_logueado}')
+
+    def setUsuarioLogueado(self, usuario):
+        self.usuario_logueado = usuario
+
+    def guardarCitasEnJSON(self):
+        with open('Projecte_DI/datos/citas.json', 'w') as file:
+            json.dump(self.citas_por_dia, file)
+
+def main():
+    app = QApplication(sys.argv)
+    calendario_app = CalendarioApp()
+    calendario_app.show()
+    sys.exit(app.exec())
+
+if __name__ == '__main__':
+    main()

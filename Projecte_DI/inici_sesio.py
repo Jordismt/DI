@@ -15,7 +15,7 @@ class Inici_Sesion(QMainWindow):
         self.setWindowTitle('HealtMate: Iniciar sesión/Registrarse')
         self.setGeometry(250, 250, 650, 250)
         self.setStyleSheet(
-            "background-color: #FAEBD7; font-size: 14px; font-family: Arial; color: #333333;"
+            "background-color: rgb(70, 130, 180); font-size: 14px; font-family: Arial; color: #333333;"
         )
         self.users = self.load_users()  # Cargar usuarios desde el archivo JSON
         self.initUI()
@@ -109,6 +109,16 @@ class Inici_Sesion(QMainWindow):
             self.users[username] = password
             self.save_users()
             QMessageBox.information(self, 'Registro', 'Registro Exitoso')
+
+    def addUsuarioInvitado(self):
+        username_invitado = "Invitado"
+        password_invitado = "invitado"  # Puedes establecer cualquier contraseña para el invitado
+
+        # Añadir el usuario invitado al diccionario de usuarios
+        self.users[username_invitado] = {"password": password_invitado}
+
+        # Guardar el diccionario actualizado en el archivo JSON
+        self.save_users()
 
     def google_login(self):
         # Fer duncio per iniciar secio en google

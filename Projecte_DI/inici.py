@@ -2,15 +2,16 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
-from menu import *
 from inici_sesio import *
+from menu import *
+
 
 class Inici(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('HealtMate')
         self.setGeometry(250, 250, 550, 850)
-        self.setStyleSheet("background-color: #FAEBD7")
+        self.setStyleSheet("background-color: rgb(70, 130, 180);")
         self.initUI()
 
     def initUI(self):
@@ -49,7 +50,7 @@ class Inici(QMainWindow):
         layout.addWidget(btn_guest)
         btn_guest.setMinimumWidth(200) 
         btn_guest.setMinimumHeight(50)  
-        btn_guest.setStyleSheet("background-color: withe")
+        btn_guest.setStyleSheet("background-color: witghe")
         btn_guest.clicked.connect(self.showMainMenu)
 
         # Ajustar botons al centre
@@ -59,9 +60,15 @@ class Inici(QMainWindow):
 
     def showInici(self):
         self.inici_secio.show()
+
+        
     def showMainMenu(self):
+        # Si se hace clic en "Acceder como Invitado", agrega el usuario invitado al JSON
+        if self.sender().text() == 'Acceder como Invitado':
+            self.inici_secio.addUsuarioInvitado()
+
         self.close()
-        self.main_menu.show()  
+        self.main_menu.show() 
 def main():
     app = QApplication(sys.argv)
     inici = Inici()

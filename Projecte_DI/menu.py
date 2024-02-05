@@ -2,8 +2,8 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
+from pedir_cita import PedirCita
 
-#Importar el modul calendari.
 from calendari import CalendarioApp
 
 class Menu(QMainWindow):
@@ -11,12 +11,13 @@ class Menu(QMainWindow):
         super().__init__()
         self.setWindowTitle('HealthMate')
         self.setGeometry(250, 250, 550, 850)
+        self.pedir_cita=PedirCita()
 
         # Añadir estils CSS a la aplicació
         self.setStyleSheet(
             '''
             QMainWindow {
-                background-color: white;
+                background-color: rgb(70, 130, 180);
                 color: #336699;
             }
 
@@ -63,19 +64,26 @@ class Menu(QMainWindow):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
 
-        # Menú para el icono del menú desplegable
+       # Menú para el icono del menú desplegable
         popup_menu = QMenu(self)
         popup_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; ')
 
+        # Crear tres opciones para abrir diferentes ventanas
+        action_pedir_cita = QAction('Pedir Cita', self)
+        action_opcion2 = QAction('Opción 2', self)
+        action_opcion3 = QAction('Opción 3', self)
 
-        # Crear 5 opciones para probar
-        for i in range(5):
-            action = QAction(f'Opción {i+1}', self)
-            popup_menu.addAction(action)
- 
+        # Conectar cada acción con su respectiva función al hacer clic
+        action_pedir_cita.triggered.connect(self.abrirVentanaPedirCita)
+        action_opcion2.triggered.connect(self.abrirVentanaOpcion2)
+        action_opcion3.triggered.connect(self.abrirVentanaOpcion3)
+
+        # Agregar las acciones al menú
+        popup_menu.addAction(action_pedir_cita)
+        popup_menu.addAction(action_opcion2)
+        popup_menu.addAction(action_opcion3)
         popup_menu.addSeparator()
         popup_menu.addAction(exit_action)
-
 
         popup_menu.aboutToShow.connect(lambda: self.adjustMenuHeight(popup_menu))
 
@@ -84,6 +92,7 @@ class Menu(QMainWindow):
         menu_icon = QIcon(icon_path_menu)
         menu_action = menubar.addAction(menu_icon, '')
         menu_action.setMenu(popup_menu)
+
 
         # Menú para el icono del perfil
         profile_menu = QMenu(self)
@@ -97,15 +106,27 @@ class Menu(QMainWindow):
         menubar.addMenu(profile_menu)
 
         self.adjustMenuHeight(popup_menu)  # Ajustar la altura del menú desplegable
-        # Agregar el calendario directamente al QStackedWidget
-        self.stacked_widget = QStackedWidget(self)
-        calendario_widget = CalendarioApp()
-        self.stacked_widget.addWidget(calendario_widget)
-        self.setCentralWidget(self.stacked_widget)
+    
 
-        # Mostrar directamente el calendario
-        self.stacked_widget.setCurrentIndex(0)
 
+    def abrirVentanaPedirCita(self):
+        print("Abriendo ventana de pedir cita")
+        try:
+           
+            self.pedir_cita.show()
+            
+
+        except Exception as e:
+            print(f"Error al abrir la ventana de pedir cita: {e}")
+
+
+    def abrirVentanaOpcion2(self):
+        # Implementa la lógica para abrir la ventana de la opción 2
+        print("Abrir ventana de la opción 2")
+
+    def abrirVentanaOpcion3(self):
+        # Implementa la lógica para abrir la ventana de la opción 3
+        print("Abrir ventana de la opción 3")
 
     def adjustMenuHeight(self, menu):
         # Ajustar el menú para que se acople a la ventana
