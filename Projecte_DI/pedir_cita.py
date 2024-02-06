@@ -15,9 +15,6 @@ class PedirCita(QMainWindow):
         self.initUI()
     
     def initUI(self):
-        
-
-
         # Agregar el calendario directamente al QStackedWidget
         self.stacked_widget = QStackedWidget(self)
         calendario_widget = CalendarioApp()
@@ -25,23 +22,26 @@ class PedirCita(QMainWindow):
         # Añadir un cuadro de texto para mostrar las citas
         self.cuadro_texto = QTextEdit(self)
         self.cuadro_texto.setReadOnly(True)
+
         # Crear un layout vertical para organizar las etiquetas y widgets
         layout = QVBoxLayout()
 
-        texto_perfil=QLabel("Pedir Cita")
+        # Agregar un QLabel para el título
+        texto_perfil = QLabel("Pedir Cita", self)
         texto_perfil.setAlignment(Qt.AlignCenter)
         layout.addWidget(texto_perfil)
-        # Crear un combo box para seleccionar el tipo de mascota
-        tipo_mascota_combo = QComboBox()
-        tipo_mascota_combo.addItems(["Tipo de mascota", "Perro", "Gato", "Ave", "Reptil", "Roedor", "Pez", "Conejo", "Caballo", "Otro"])
-        tipo_mascota_combo.setCurrentText("Tipo de mascota")  # opción por defecto
 
-        servicio=QComboBox()
-        servicio.addItems(["Seleccione servicio", "Vacunación", "Revisión", "Urgencias"])
-        servicio.setCurrentText("Seleccione servicio")
+        # Crear los QComboBox para seleccionar el tipo de mascota y el servicio
+        self.tipo_mascota_combo = QComboBox()
+        self.tipo_mascota_combo.addItems(["Tipo de mascota", "Perro", "Gato", "Ave", "Reptil", "Roedor", "Pez", "Conejo", "Caballo", "Otro"])
+        self.tipo_mascota_combo.setCurrentText("Tipo de mascota")  # opción por defecto
 
-        layout.addWidget(servicio)
-        layout.addWidget(tipo_mascota_combo)
+        self.servicio = QComboBox()
+        self.servicio.addItems(["Seleccione servicio", "Vacunación", "Revisión", "Urgencias"])
+        self.servicio.setCurrentText("Seleccione servicio")
+
+        layout.addWidget(self.servicio)
+        layout.addWidget(self.tipo_mascota_combo)
         layout.addWidget(calendario_widget)
         layout.addWidget(self.cuadro_texto)
 
@@ -64,13 +64,23 @@ class PedirCita(QMainWindow):
         layout.addWidget(self.btn_volver_menu, alignment=Qt.AlignTop | Qt.AlignLeft)
 
     def mostrarCita(self, fecha, usuario):
-        # Agregar la cita al cuadro de texto
-        texto_cita = f'Cita agendada para el día {fecha.toString("dd-MM-yyyy")} por el usuario {usuario}\n'
-        self.cuadro_texto.append(texto_cita)
+        # Obtener las opciones seleccionadas de los QComboBox
+        tipo_mascota = self.tipo_mascota_combo.currentText()
+        servicio = self.servicio.currentText()
+
+        # Verificar si las opciones seleccionadas no son las opciones por defecto
+        if tipo_mascota != "Tipo de mascota" and servicio != "Seleccione servicio":
+            # Agregar la cita al cuadro de texto incluyendo las opciones seleccionadas
+            texto_cita = f'·Cita agendada para el día {fecha.toString("dd-MM-yyyy")} por el usuario {usuario}.'
+            texto_cita += f'\n --Tipo de mascota: {tipo_mascota}'
+            texto_cita += f'\n --Servicio seleccionado: {servicio}\n'
+            self.cuadro_texto.append(texto_cita)
+        else:
+            # Mostrar un mensaje de error en caso de que las opciones seleccionadas sean las por defecto
+            QMessageBox.warning(self, "Error", "Por favor seleccione un tipo de mascota y un servicio antes de pedir cita.")
 
     def mostrarMenu(self):
         self.close()
-
 
 
 def main():

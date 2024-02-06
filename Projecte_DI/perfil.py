@@ -68,11 +68,6 @@ class Perfil(QMainWindow):
         # Crear un layout vertical para organizar las etiquetas y widgets
         layout = QVBoxLayout()
 
-        # Crear un combo box para seleccionar el tipo de mascota
-        tipo_mascota_combo = QComboBox()
-        tipo_mascota_combo.addItems(["Tipo de mascota", "Perro", "Gato", "Ave", "Reptil", "Roedor", "Pez", "Conejo", "Caballo", "Otro"])
-        tipo_mascota_combo.setCurrentText("Tipo de mascota")  # Establecer "Tipo de mascota" como la opción por defecto
-        layout.addWidget(tipo_mascota_combo)
 
         # Crear etiquetas para mostrar la información del usuario
         nombre_label = QLabel("Nombre: Usuario")

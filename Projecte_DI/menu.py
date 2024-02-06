@@ -75,8 +75,9 @@ class Menu(QMainWindow):
 
         # Crear tres opciones para abrir diferentes ventanas
         action_pedir_cita = QAction('Pedir Cita', self)
+        action_pedir_cita.setShortcut('Ctrl+P')
         action_opcion2 = QAction('Perfil', self)
-        
+        action_opcion2.setShortcut('Ctrl+O')
 
         # Conectar cada acción con su respectiva función al hacer clic
         action_pedir_cita.triggered.connect(self.abrirVentanaPedirCita)
