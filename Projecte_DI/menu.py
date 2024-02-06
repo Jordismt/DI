@@ -3,8 +3,7 @@ from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from pedir_cita import PedirCita
-
-from calendari import CalendarioApp
+from perfil import Perfil
 
 class Menu(QMainWindow):
     def __init__(self):
@@ -12,7 +11,7 @@ class Menu(QMainWindow):
         self.setWindowTitle('HealthMate')
         self.setGeometry(250, 250, 550, 850)
         self.pedir_cita=PedirCita()
-
+        self.perfil=Perfil()
         # Añadir estils CSS a la aplicació
         self.setStyleSheet(
             '''
@@ -22,7 +21,7 @@ class Menu(QMainWindow):
             }
 
             QMenuBar {
-                background-color: #f0f0f0;
+                background-color: white;
                 font-size: 40px;
             }
 
@@ -52,6 +51,13 @@ class Menu(QMainWindow):
                 width: 40px;
                 height: 40px;
             }
+            QLabel#titleLabel {
+                font-size: 40px;
+                color: white;
+                background-color: #336699;
+                padding: 20px;
+                text-align: center;
+            }
             '''
         )
         self.initUI()
@@ -59,29 +65,28 @@ class Menu(QMainWindow):
     def initUI(self):
         exit_action = QAction('Salir', self)
         exit_action.setShortcut('Ctrl+Q')
-        exit_action.triggered.connect(self.close)
+        exit_action.triggered.connect(self.confirmarSalir)  
 
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
-
        # Menú para el icono del menú desplegable
         popup_menu = QMenu(self)
         popup_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; ')
 
         # Crear tres opciones para abrir diferentes ventanas
         action_pedir_cita = QAction('Pedir Cita', self)
-        action_opcion2 = QAction('Opción 2', self)
-        action_opcion3 = QAction('Opción 3', self)
+        action_opcion2 = QAction('Perfil', self)
+        
 
         # Conectar cada acción con su respectiva función al hacer clic
         action_pedir_cita.triggered.connect(self.abrirVentanaPedirCita)
-        action_opcion2.triggered.connect(self.abrirVentanaOpcion2)
-        action_opcion3.triggered.connect(self.abrirVentanaOpcion3)
+        action_opcion2.triggered.connect(self.abrirVentanaPerfil)
+     
 
         # Agregar las acciones al menú
         popup_menu.addAction(action_pedir_cita)
         popup_menu.addAction(action_opcion2)
-        popup_menu.addAction(action_opcion3)
+
         popup_menu.addSeparator()
         popup_menu.addAction(exit_action)
 
@@ -106,27 +111,34 @@ class Menu(QMainWindow):
         menubar.addMenu(profile_menu)
 
         self.adjustMenuHeight(popup_menu)  # Ajustar la altura del menú desplegable
-    
 
+
+    def confirmarSalir(self):
+        confirmar_salida = QMessageBox.question(self, 'Confirmar salida', '¿Estás seguro de que deseas salir?',
+                                                QMessageBox.Yes | QMessageBox.No)
+        if confirmar_salida == QMessageBox.Yes:
+            QApplication.quit() 
 
     def abrirVentanaPedirCita(self):
         print("Abriendo ventana de pedir cita")
         try:
            
             self.pedir_cita.show()
-            
+
 
         except Exception as e:
             print(f"Error al abrir la ventana de pedir cita: {e}")
 
 
-    def abrirVentanaOpcion2(self):
-        # Implementa la lógica para abrir la ventana de la opción 2
-        print("Abrir ventana de la opción 2")
+    def abrirVentanaPerfil(self):
+        print("Abriendo ventana de pedir cita")
+        try:
+           
+            self.perfil.show()
 
-    def abrirVentanaOpcion3(self):
-        # Implementa la lógica para abrir la ventana de la opción 3
-        print("Abrir ventana de la opción 3")
+
+        except Exception as e:
+            print(f"Error al abrir la ventana de pedir cita: {e}")
 
     def adjustMenuHeight(self, menu):
         # Ajustar el menú para que se acople a la ventana

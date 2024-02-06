@@ -25,9 +25,23 @@ class PedirCita(QMainWindow):
         # Añadir un cuadro de texto para mostrar las citas
         self.cuadro_texto = QTextEdit(self)
         self.cuadro_texto.setReadOnly(True)
-
-        # Añadir el calendario y el cuadro de texto al diseño
+        # Crear un layout vertical para organizar las etiquetas y widgets
         layout = QVBoxLayout()
+
+        texto_perfil=QLabel("Pedir Cita")
+        texto_perfil.setAlignment(Qt.AlignCenter)
+        layout.addWidget(texto_perfil)
+        # Crear un combo box para seleccionar el tipo de mascota
+        tipo_mascota_combo = QComboBox()
+        tipo_mascota_combo.addItems(["Tipo de mascota", "Perro", "Gato", "Ave", "Reptil", "Roedor", "Pez", "Conejo", "Caballo", "Otro"])
+        tipo_mascota_combo.setCurrentText("Tipo de mascota")  # opción por defecto
+
+        servicio=QComboBox()
+        servicio.addItems(["Seleccione servicio", "Vacunación", "Revisión", "Urgencias"])
+        servicio.setCurrentText("Seleccione servicio")
+
+        layout.addWidget(servicio)
+        layout.addWidget(tipo_mascota_combo)
         layout.addWidget(calendario_widget)
         layout.addWidget(self.cuadro_texto)
 
@@ -56,6 +70,7 @@ class PedirCita(QMainWindow):
 
     def mostrarMenu(self):
         self.close()
+
 
 
 def main():
