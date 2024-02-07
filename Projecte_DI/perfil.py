@@ -3,40 +3,24 @@ from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 
+from ofertas import Ofertas
+
 
 class Perfil(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('HealthMate')
-        self.setGeometry(250, 250, 550, 850)
+        self.setWindowTitle('HealthMate - Perfil')
+        self.setGeometry(250, 250, 550, 400)  # Se ajusta la altura de la ventana
+        self.oferta=Ofertas()
         self.setStyleSheet(
             '''
             QMainWindow {
-                background-color: rgb(70, 130, 180);  /* Cambiar el fondo de la ventana a negro */
+                background-color: rgb(70, 130, 180);  /* Cambiar el fondo de la ventana a un tono azul */
                 color: #ffffff;  /* Cambiar el color del texto a blanco */
             }
-            QToolBar {
-                background-color: black;  /* Cambiar el fondo del app bar a blanco */
-                border-bottom: 2px solid #cccccc;
-            }
-            QAction {
-                color: black;  /* Cambiar el color del texto del botón de atrás a negro */
-            }
             QLabel {
-                font-size: 16px;
-                margin-bottom: 10px;
-            }
-            QComboBox, QPushButton {
-                font-size: 16px;
-                padding: 8px 16px;
-            }
-            QPushButton {
-                background-color: #336699;
-                color: #ffffff;
-                border-radius: 5px;
-            }
-            QPushButton:hover {
-                background-color: #428bca;
+                font-size: 20px;  /* Aumentar el tamaño del texto */
+                margin-bottom: 15px;  /* Incrementar el margen inferior */
             }
             '''
         )
@@ -52,7 +36,7 @@ class Perfil(QMainWindow):
         back_button.triggered.connect(self.back)
         appbar.addAction(back_button)
 
-        # Crear un widget con política de tamaño expansiva para empujar la imagen al otro lado
+        # Crear un widget con política de tamaño expansiva para poner la imagen al otro lado
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         appbar.addWidget(spacer)
@@ -67,7 +51,6 @@ class Perfil(QMainWindow):
 
         # Crear un layout vertical para organizar las etiquetas y widgets
         layout = QVBoxLayout()
-
 
         # Crear etiquetas para mostrar la información del usuario
         nombre_label = QLabel("Nombre: Usuario")
@@ -84,20 +67,20 @@ class Perfil(QMainWindow):
         layout.addWidget(id_label)
         layout.addWidget(correo_label)
 
-        # Crear un widget para organizar las etiquetas y el combo box
-        info_widget = QWidget()
-        info_widget.setLayout(layout)
+        # Crear un botón para ver ofertas
+        ver_ofertas_button = QPushButton("Ver Ofertas")
+        ver_ofertas_button.clicked.connect(self.verOfertas)
 
-        # Agregar el widget de información al layout principal
-        layout.addWidget(info_widget)
+        # Agregar el botón de ver ofertas al layout
+        layout.addWidget(ver_ofertas_button)
 
         # Crear un botón para cerrar sesión
         cerrar_sesion_button = QPushButton("Cerrar Sesión")
         cerrar_sesion_button.clicked.connect(self.cerrarSesion)
 
-        # Agregar el botón al layout
+        # Agregar el botón de cerrar sesión al layout
         layout.addWidget(cerrar_sesion_button)
-
+        
         # Establecer espaciado y margen para el layout principal
         layout.setSpacing(20)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -112,6 +95,9 @@ class Perfil(QMainWindow):
 
     def cerrarSesion(self):
         self.close()
+
+    def verOfertas(self):
+        self.oferta.show()
 
 def main():
     app = QApplication(sys.argv)

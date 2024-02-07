@@ -43,7 +43,20 @@ class PedirCita(QMainWindow):
         layout.addWidget(self.servicio)
         layout.addWidget(self.tipo_mascota_combo)
         layout.addWidget(calendario_widget)
-        layout.addWidget(self.cuadro_texto)
+
+        # Crear un QHBoxLayout para organizar el botón y el cuadro de texto
+        vbox = QVBoxLayout()
+        
+        # Agregar botón para eliminar el texto del cuadro de texto
+        self.btn_limpiar_texto = QPushButton('Eliminar citas', self)
+        self.btn_limpiar_texto.clicked.connect(self.limpiarTexto)
+        vbox.addWidget(self.btn_limpiar_texto)
+
+        # Agregar el cuadro de texto al QHBoxLayout
+        vbox.addWidget(self.cuadro_texto)
+
+        # Agregar el QHBoxLayout al QVBoxLayout
+        layout.addLayout(vbox)
 
         # Crear un widget contenedor y asignar el diseño
         container_widget = QWidget(self)
@@ -62,6 +75,18 @@ class PedirCita(QMainWindow):
         self.btn_volver_menu = QPushButton('Volver al Menú', self)
         self.btn_volver_menu.clicked.connect(self.mostrarMenu)
         layout.addWidget(self.btn_volver_menu, alignment=Qt.AlignTop | Qt.AlignLeft)
+    
+        # Conectar la señal clicked del botón de pedir cita a la función para restablecer las opciones por defecto
+        calendario_widget.button_pedir_cita.clicked.connect(self.reset_combo_boxes)
+
+    def reset_combo_boxes(self):
+        # Restablecer las opciones por defecto en los QComboBox
+        self.tipo_mascota_combo.setCurrentText("Tipo de mascota")
+        self.servicio.setCurrentText("Seleccione servicio")
+
+    def limpiarTexto(self):
+        # Limpiar el texto del cuadro de texto
+        self.cuadro_texto.clear()
 
     def mostrarCita(self, fecha, usuario):
         # Obtener las opciones seleccionadas de los QComboBox

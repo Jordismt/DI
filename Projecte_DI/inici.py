@@ -9,7 +9,7 @@ from menu import *
 class Inici(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('HealtMate')
+        self.setWindowTitle('HealtMate - Inicio')
         self.setGeometry(250, 250, 550, 850)
         self.setStyleSheet("background-color: rgb(70, 130, 180);")
         self.initUI()
@@ -63,7 +63,7 @@ class Inici(QMainWindow):
 
         
     def showMainMenu(self):
-        # Si se hace clic en "Acceder como Invitado", agrega el usuario invitado al JSON
+        # Si es fa click en "Acceder como Invitado", agrega l' usuari invitado al JSON
         if self.sender().text() == 'Acceder como Invitado':
             self.inici_secio.addUsuarioInvitado()
 

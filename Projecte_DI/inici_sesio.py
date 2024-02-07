@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 class Inici_Sesion(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('HealtMate: Iniciar sesión/Registrarse')
+        self.setWindowTitle('HealtMate - Iniciar sesión/Registrarse')
         self.setGeometry(250, 250, 650, 250)
         self.setStyleSheet(
             "background-color: rgb(70, 130, 180); font-size: 14px; font-family: Arial; color: #333333;"
