@@ -56,7 +56,7 @@ class TiendaApp(QWidget):
             self.lista_productos.setItemWidget(item, widget)
         
         # Estilizar la lista de productos
-        self.lista_productos.setStyleSheet("QListWidget { border: 1px solid gray; background-color: #f0f0f0; }")
+        self.lista_productos.setStyleSheet("QListWidget { border: 1px solid gray; background-color: rgb(70, 130, 180); }")
         
         # Botones de acciones
         self.btn_agregar = QPushButton(QIcon('add.png'), 'Agregar al Carrito')
@@ -126,7 +126,7 @@ class CarritoWindow(QDialog):
         
         # Lista de productos en el carrito
         self.lista_carrito = QListWidget()
-        self.lista_carrito.setStyleSheet("QListWidget { border: 1px solid gray; background-color: #f0f0f0; }")
+        self.lista_carrito.setStyleSheet("QListWidget { border: 1px solid gray; background-color: rgb(70, 130, 180); }")
         for producto in self.carrito:
             item = QListWidgetItem()
             widget = QWidget()

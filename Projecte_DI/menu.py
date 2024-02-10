@@ -6,6 +6,8 @@ from tienda import TiendaApp
 from ofertas import Ofertas
 from pedir_cita import PedirCita
 from perfil import Perfil
+from opiniones import OpinionWindow
+from foro_comunity import CommunityForum
 
 class Menu(QMainWindow):
     def __init__(self):
@@ -16,6 +18,8 @@ class Menu(QMainWindow):
         self.perfil = Perfil()
         self.ofertas = Ofertas()
         self.tienda = TiendaApp()
+        self.opinion=OpinionWindow()
+        self.foro=CommunityForum()
         self.setStyleSheet(
             '''
             QMainWindow {
@@ -97,10 +101,26 @@ class Menu(QMainWindow):
 
         scroll_layout.addWidget(self.createSection("Pedir Cita", "Projecte_DI/images/foto_menu1.png", self.abrirVentanaPedirCita))
         scroll_layout.addWidget(self.createSection("Ofertas", "Projecte_DI/images/foto_menu2.png", self.abrirVentanaOfertas))
-        btn_tienda=QPushButton("Tienda")
-        btn_tienda.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
-        btn_tienda.clicked.connect(self.abrirVentanaTienda)
-        scroll_layout.addWidget(btn_tienda)
+
+        # Redimensionar la imagen a un tamaño específico
+        image_path = "Projecte_DI/images/tienda.jpeg"
+        pixmap = QPixmap(image_path)
+        small_pixmap = pixmap.scaled(250, 250)  # Redimensionar a 100x100 píxeles (ancho x alto)
+
+        # Agregar la imagen al widget
+        scroll_layout.addWidget(self.createSection("Tienda", small_pixmap, self.abrirVentanaTienda))
+
+        btn_opiniones=QPushButton("Opiniones")
+        btn_opiniones.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
+        btn_opiniones.clicked.connect(self.abrirVentanaOpiniones)
+
+        btn_forum=QPushButton("Foro de la comunidad")
+        btn_forum.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
+        btn_forum.clicked.connect(self.abrirVentanaForo)
+
+        scroll_layout.addWidget(btn_opiniones)
+        scroll_layout.addWidget(btn_forum)
+
         scroll_area.setWidget(scroll_content)
         layout.addWidget(scroll_area)
 
@@ -130,18 +150,31 @@ class Menu(QMainWindow):
 
         action_pedir_cita = QAction('Pedir Cita', self)
         action_pedir_cita.setShortcut('Ctrl+P')
-        action_opcion2 = QAction('Perfil', self)
-        action_opcion2.setShortcut('Ctrl+O')
+        action_perfil = QAction('Perfil', self)
+        action_perfil.setShortcut('Ctrl+O')
         action_ofertas=QAction("Ofertas", self)
         action_ofertas.setShortcut('Ctrl+A')
+        action_tienda=QAction("Tienda", self)
+        action_tienda.setShortcut('Ctrl+T')
+        action_opiniones=QAction("Opiniones", self)
+        action_opiniones.setShortcut('Ctrl+M')
+        action_foro=QAction("Foro", self)
+        action_foro.setShortcut("Ctrl+F")
 
         action_pedir_cita.triggered.connect(self.abrirVentanaPedirCita)
-        action_opcion2.triggered.connect(self.abrirVentanaPerfil)
+        action_perfil.triggered.connect(self.abrirVentanaPerfil)
         action_ofertas.triggered.connect(self.abrirVentanaOfertas)
+        action_tienda.triggered.connect(self.abrirVentanaTienda)
+        action_opiniones.triggered.connect(self.abrirVentanaOpiniones)
+        action_foro.triggered.connect(self.abrirVentanaForo)
+
 
         popup_menu.addAction(action_pedir_cita)
         popup_menu.addAction(action_ofertas)
-        popup_menu.addAction(action_opcion2)
+        popup_menu.addAction(action_perfil)
+        popup_menu.addAction(action_tienda)
+        popup_menu.addAction(action_opiniones)
+        popup_menu.addAction(action_foro)
 
         popup_menu.addSeparator()
         popup_menu.addAction(exit_action)
@@ -221,6 +254,12 @@ class Menu(QMainWindow):
 
     def abrirVentanaTienda(self, event):
         self.tienda.show()
+
+    def abrirVentanaOpiniones(self, event):
+        self.opinion.show()
+
+    def abrirVentanaForo(self, event):
+        self.foro.show()
 
     def adjustMenuHeight(self, menu):
         menu_height = self.height() - self.menuBar().height() - 2
