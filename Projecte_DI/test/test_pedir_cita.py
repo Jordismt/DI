@@ -33,5 +33,5 @@ def test_pedir_cita_no_agregar_texto(qtbot):
     assert cuadro_texto.toPlainText() == texto_actual
 
 if __name__ == '__main__':
-    # Executar les proves utilitzant pytest
+
     pytest.main([__file__])

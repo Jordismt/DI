@@ -2,6 +2,7 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtCore import *
+from tienda import TiendaApp
 from ofertas import Ofertas
 from pedir_cita import PedirCita
 from perfil import Perfil
@@ -11,35 +12,37 @@ class Menu(QMainWindow):
         super().__init__()
         self.setWindowTitle('HealthMate - Menu')
         self.setGeometry(250, 250, 550, 850)
-        self.pedir_cita=PedirCita()
-        self.perfil=Perfil()
-        self.ofertas=Ofertas()
+        self.pedir_cita = PedirCita()
+        self.perfil = Perfil()
+        self.ofertas = Ofertas()
+        self.tienda = TiendaApp()
         self.setStyleSheet(
             '''
             QMainWindow {
                 background-color: rgb(70, 130, 180);
-                color: #336699;
+                color: #ffffff;
             }
 
             QMenuBar {
-                background-color: white;
-                font-size: 40px;
+                background-color: #336699;
+                font-size: 16px;
+                color: #ffffff;
             }
 
             QMenuBar::item {
-                background-color: #f0f0f0;
-                color: #336699;
-                padding: 12px 12px;
-                font-size: 30px;
+                background-color: #336699;
+                color: #ffffff;
+                padding: 8px 16px;
+                font-size: 16px;
             }
 
             QMenuBar::item:selected {
-                background-color: #336699;
-                color: white;
+                background-color: #ffffff;
+                color: #336699;
             }
 
             QMenu {
-                background-color: #f0f0f0;
+                background-color: #ffffff;
                 color: #336699;
                 border: 1px solid #336699;
             }
@@ -49,60 +52,58 @@ class Menu(QMainWindow):
             }
 
             QMenu::icon {
-                width: 40px;
-                height: 40px;
+                width: 24px;
+                height: 24px;
             }
+
             QLabel#titleLabel {
-                font-size: 40px;
+                font-size: 36px;
                 color: white;
                 background-color: #336699;
                 padding: 20px;
                 text-align: center;
+            }
+
+            QLabel#sectionLabel {
+                font-size: 24px;
+                color: #336699;
+                padding: 20px;
+                text-align: center;
+            }
+
+            QLabel#imageLabel {
+                padding: 40px;
             }
             '''
         )
         self.initUI()
 
     def initUI(self):
-        # Crear un layout vertical para organizar los elementos en la ventana principal
         layout = QVBoxLayout()
 
         font = QFont() 
-        font.setPointSize(20)  
+        font.setPointSize(18)  
 
-        # Agregar el título "Pedir Cita" al layout
-        texto_pedir_cita = QLabel("Pedir Cita", self)
-        texto_pedir_cita.setAlignment(Qt.AlignCenter)
-        texto_pedir_cita.setFont(font)  # Aplica la fuente al QLabel
-        layout.addWidget(texto_pedir_cita)
+        title_label = QLabel("HealthMate", self)
+        title_label.setObjectName("titleLabel")
 
-        imagen_pedir_cita = QLabel(self)
-        imagen_pedir_cita.setPixmap(QPixmap("Projecte_DI/images/foto_menu1.png"))  # Ruta de la primera imagen
-        imagen_pedir_cita.setAlignment(Qt.AlignCenter)
-        layout.addWidget(imagen_pedir_cita)
+        layout.addWidget(title_label)
 
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
 
-        texto_ofertas = QLabel("Ofertas", self)
-        texto_ofertas.setAlignment(Qt.AlignCenter)
-        texto_ofertas.setFont(font)
-        layout.addWidget(texto_ofertas)
+        scroll_content = QWidget()
+        scroll_layout = QVBoxLayout(scroll_content)
 
+        scroll_layout.addWidget(self.createSection("Pedir Cita", "Projecte_DI/images/foto_menu1.png", self.abrirVentanaPedirCita))
+        scroll_layout.addWidget(self.createSection("Ofertas", "Projecte_DI/images/foto_menu2.png", self.abrirVentanaOfertas))
+        btn_tienda=QPushButton("Tienda")
+        btn_tienda.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
+        btn_tienda.clicked.connect(self.abrirVentanaTienda)
+        scroll_layout.addWidget(btn_tienda)
+        scroll_area.setWidget(scroll_content)
+        layout.addWidget(scroll_area)
 
-        imagen_ofertas = QLabel(self)
-        imagen_ofertas.setPixmap(QPixmap("Projecte_DI/images/foto_menu2.png"))  # Ruta de la segunda imagen
-        imagen_ofertas.setAlignment(Qt.AlignCenter)
-        layout.addWidget(imagen_ofertas)
-
-        # Conectar las señales de clic de las imágenes a las funciones correspondientes
-        imagen_pedir_cita.mousePressEvent = self.abrirVentanaPedirCita
-        imagen_ofertas.mousePressEvent = self.abrirVentanaOfertas
-
-        # Agregar el botón "Ver Menú" al layout
-        btn_ver_menu = QPushButton("Ver Menú", self)
-        btn_ver_menu.clicked.connect(self.mostrarMenu)
-        layout.addWidget(btn_ver_menu, alignment=Qt.AlignCenter)
-
-        # Crear un widget contenedor y asignar el layout
         container_widget = QWidget(self)
         container_widget.setLayout(layout)
         self.setCentralWidget(container_widget)
@@ -113,10 +114,19 @@ class Menu(QMainWindow):
 
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
-       # Menú para el icono del menú desplegable
+
+        ayuda_menu = menubar.addMenu('Ayuda')
+
+        ayuda_pedir_cita = QAction('Ayuda al Pedir Cita', self)
+        ayuda_pedir_cita.triggered.connect(self.mostrarAyudaPedirCita)
+        ayuda_menu.addAction(ayuda_pedir_cita)
+
+        ayuda_crear_cuenta = QAction('Ayuda al Crear Cuenta', self)
+        ayuda_crear_cuenta.triggered.connect(self.mostrarAyudaCrearCuenta)
+        ayuda_menu.addAction(ayuda_crear_cuenta)
+
         popup_menu = QMenu(self)
         popup_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; ')
-
 
         action_pedir_cita = QAction('Pedir Cita', self)
         action_pedir_cita.setShortcut('Ctrl+P')
@@ -129,24 +139,20 @@ class Menu(QMainWindow):
         action_opcion2.triggered.connect(self.abrirVentanaPerfil)
         action_ofertas.triggered.connect(self.abrirVentanaOfertas)
 
-        # Agregar las acciones al menú
         popup_menu.addAction(action_pedir_cita)
         popup_menu.addAction(action_ofertas)
         popup_menu.addAction(action_opcion2)
-
 
         popup_menu.addSeparator()
         popup_menu.addAction(exit_action)
 
         popup_menu.aboutToShow.connect(lambda: self.adjustMenuHeight(popup_menu))
 
-        # Icono del menú desplegable
         icon_path_menu = "Projecte_DI/images/icono_menu.png"
         menu_icon = QIcon(icon_path_menu)
         menu_action = menubar.addAction(menu_icon, '')
         menu_action.setMenu(popup_menu)
 
-        # Menú para el icono del perfil
         profile_menu = QMenu(self)
         profile_menu.setStyleSheet('background-color: #336699; color: white; border: 3px solid #336699; align:rigth ')
 
@@ -156,7 +162,34 @@ class Menu(QMainWindow):
 
         menubar.addMenu(profile_menu)
 
-        self.adjustMenuHeight(popup_menu)  # Ajustar la altura del menú desplegable
+        self.adjustMenuHeight(popup_menu)
+
+    def createSection(self, title, image_path, click_handler):
+        section_layout = QVBoxLayout()
+
+        font = QFont() 
+        font.setPointSize(16)  
+
+        section_label = QLabel(title, self)
+        section_label.setObjectName("sectionLabel")
+        section_label.setFont(font)
+        section_label.setAlignment(Qt.AlignCenter)
+
+        section_layout.addWidget(section_label)
+
+        image_label = QLabel(self)
+        image_label.setPixmap(QPixmap(image_path))
+        image_label.setAlignment(Qt.AlignCenter)
+        image_label.setObjectName("imageLabel")
+
+        section_layout.addWidget(image_label)
+
+        image_label.mousePressEvent = click_handler
+
+        section_widget = QWidget(self)
+        section_widget.setLayout(section_layout)
+
+        return section_widget
 
     def confirmarSalir(self):
         confirmar_salida = QMessageBox.question(
@@ -165,13 +198,12 @@ class Menu(QMainWindow):
         if confirmar_salida == QMessageBox.Yes:
             QApplication.quit()
 
-    # Definir la función para abrir la ventana de ofertas(Completar la pagina Oferta)
     def abrirVentanaOfertas(self, event):
         print("Abriendo ventana de ofertas")
         try:
             self.ofertas.show()
         except Exception as e:
-                print(f"Error al abrir la ventana de pedir cita: {e}")
+                print(f"Error al abrir la ventana de ofertas: {e}")
 
     def abrirVentanaPedirCita(self, event):
         print("Abriendo ventana de pedir cita")
@@ -187,21 +219,20 @@ class Menu(QMainWindow):
         except Exception as e:
             print(f"Error al abrir la ventana de perfil: {e}")
 
+    def abrirVentanaTienda(self, event):
+        self.tienda.show()
+
     def adjustMenuHeight(self, menu):
-        # Ajustar el menú para que se acople a la ventana
         menu_height = self.height() - self.menuBar().height() - 2
         menu.setFixedHeight(menu_height)
 
-    def mostrarMenu(self):
-        # Mostrar el menú desplegable dentro de la ventana
-        print("Mostrando menú desplegable")
-        menu_action = self.menuBar().actions()[0]  # Obtener la acción del menú
-        menu = menu_action.menu()  # Obtener el menú desplegable asociado a la acción del menú
-        if menu is not None:  # Verificar si la acción del menú está asociada con un menú desplegable
-            self.adjustMenuHeight(menu)  # Ajustar la altura del menú
-            menu.show()  # Mostrar el menú desplegable
-        else:
-            print("La acción del menú no está asociada con un menú desplegable")
+    def mostrarAyudaPedirCita(self):
+        ayuda = "Instrucciones para pedir una cita: \n\n1. Selecciona la opción 'Pedir Cita' del menú.\n2. Completa el formulario con tus datos personales y la fecha/hora deseada.\n3. Confirma la cita para finalizar el proceso."
+        QMessageBox.information(self, 'Ayuda al Pedir Cita', ayuda)
+
+    def mostrarAyudaCrearCuenta(self):
+        ayuda = "Instrucciones para crear una cuenta: \n\n1. Selecciona la opción 'Crear Cuenta' del menú.\n2. Completa el formulario con tu información personal.\n3. Verifica tu dirección de correo electrónico.\n4. ¡Listo! Ya puedes acceder a tu perfil y otras funcionalidades."
+        QMessageBox.information(self, 'Ayuda al Crear Cuenta', ayuda)
 
 def main():
     app = QApplication(sys.argv)

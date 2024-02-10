@@ -2,14 +2,41 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
-
+from datetime import datetime
 
 class Ofertas(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('HealthMate - Ofertas')
-        self.setFixedSize(550, 400)  # Fijar el tamaño de la ventana
-        self.setStyleSheet("background-color: rgb(70, 130, 180);")
+        self.setGeometry(250, 250, 650, 250)  # Fijar el tamaño de la ventana
+        self.setStyleSheet(
+            """
+            QMainWindow {
+                background-color: #1E90FF; /* Cambiar el color de fondo a azul */
+                color: #ffffff; /* Cambiar el color del texto a blanco */
+            }
+            QLabel {
+                color: #ffffff; /* Cambiar el color del texto a blanco */
+            }
+            QPushButton {
+                background-color: #ffffff; /* Color de fondo del botón */
+                color: #1E90FF; /* Color del texto del botón */
+                border: 2px solid #ffffff; /* Borde del botón */
+                border-radius: 10px; /* Bordes redondeados */
+                padding: 5px 10px; /* Espaciado interno del botón */
+            }
+            QPushButton:hover {
+                background-color: #ffffff; /* Cambio de color al pasar el cursor sobre el botón */
+                color: #1E90FF; /* Cambio de color del texto al pasar el cursor sobre el botón */
+            }
+            QProgressBar {
+                color: #ffffff; /* Color del texto de la barra de progreso */
+                background-color: #3d3d3d; /* Color de fondo de la barra de progreso */
+                border: 2px solid #ffffff; /* Borde de la barra de progreso */
+                border-radius: 5px; /* Bordes redondeados */
+            }
+            """
+        )
         self.initUI()
 
     def initUI(self):
@@ -22,78 +49,65 @@ class Ofertas(QMainWindow):
         volver_action.triggered.connect(self.mostrarMenu)
         volver_menu.addAction(volver_action)
 
-        # Crear un layout vertical para organizar las etiquetas y widgets
-        layout = QVBoxLayout()
+        # Crear un layout de cuadrícula para organizar las etiquetas y widgets
+        layout = QGridLayout()
 
         # Título con imagen
-        title_widget = QWidget()
-        title_layout = QHBoxLayout()
-        title_layout.setContentsMargins(0, 20, 0, 20)
-
         title_image_label = QLabel(self)
         title_pixmap = QPixmap("title_image.png")  # Agrega tu propia imagen aquí
         title_image_label.setPixmap(title_pixmap)
         title_image_label.setAlignment(Qt.AlignCenter)
-        title_layout.addWidget(title_image_label)
-        title_widget.setLayout(title_layout)
-        layout.addWidget(title_widget)
+        layout.addWidget(title_image_label, 0, 0, 1, 2)
 
-        # Ofertas
-        font_title = QFont()
-        font_title.setPointSize(24)
-
+        # Título de las ofertas
         title_ofertas = QLabel("¡DESCUENTOS DE APERTURA!", self)
         title_ofertas.setAlignment(Qt.AlignCenter)
-        title_ofertas.setFont(font_title)
-        title_ofertas.setStyleSheet("color: white;")
-        layout.addWidget(title_ofertas)
+        title_ofertas.setStyleSheet("color: #ffffff; font-size: 24px;")
+        layout.addWidget(title_ofertas, 1, 0, 1, 2)
 
-        # Lista de ofertas y disponibilidad
-        ofertas_disponibilidad = [
-            ("20% en tu primera Revisión", True),
-            ("20% en tu primera vacunación", False),
-            ("15% por visitar la tienda más de 4 veces", True),
-            ("10% en tu primera cita online", True)
-        ]
+        row = 2
+        for oferta, disponible, descripcion, fecha_vencimiento, terminos_condiciones in self.ofertas_disponibilidad():
+            # Texto de la oferta
+            oferta_label = QLabel(oferta, self)
+            oferta_label.setStyleSheet("color: #ffffff; font-size: 18px;")
+            layout.addWidget(oferta_label, row, 0)
 
-        # Crear un widget contenedor para las ofertas
-        offers_widget = QWidget()
-        offers_layout = QVBoxLayout()
+            # Descripción de la oferta
+            descripcion_label = QLabel(descripcion, self)
+            descripcion_label.setWordWrap(True)  # Permite que el texto se ajuste automáticamente
+            descripcion_label.setStyleSheet("color: #ffffff;")
+            layout.addWidget(descripcion_label, row, 1)
 
-        font_offer = QFont()
-        font_offer.setPointSize(18)
+            # Barra de progreso para mostrar el tiempo restante (solo si la oferta está disponible)
+            if disponible:
+                progreso = self.calcular_progreso(fecha_vencimiento)
+                progreso_bar = QProgressBar(self)
+                progreso_bar.setValue(progreso)
+                layout.addWidget(progreso_bar, row + 1, 0, 1, 2)
+            else:
+                # Si la oferta no está disponible, oculta la barra de progreso
+                progreso_bar = QProgressBar(self)
+                progreso_bar.setVisible(False)
+                layout.addWidget(progreso_bar, row + 1, 0, 1, 2)
 
-        for oferta, disponible in ofertas_disponibilidad:
-            oferta_layout = QHBoxLayout()
-            #oferta_layout.setContentsMargins(20, 0, 20, 0)
-
-            # Texto de la oferta y su disponibilidad
-            oferta_label = QLabel(oferta)
-            oferta_label.setFont(font_offer)
-            oferta_layout.addWidget(oferta_label)
-            
-            # Texto de disponibilidad
-            disponible_label = QLabel("Disponible" if disponible else "No Disponible")
-            disponible_label.setFont(QFont("Arial", 10))  # Cambiar el tamaño de la fuente
-            oferta_layout.addWidget(disponible_label)
+            # Términos y condiciones
+            terminos_condiciones_label = QLabel(f"Términos y condiciones: {terminos_condiciones}", self)
+            terminos_condiciones_label.setWordWrap(True)
+            terminos_condiciones_label.setStyleSheet("color: #ffffff;")
+            layout.addWidget(terminos_condiciones_label, row + 2, 0, 1, 2)
 
             # Botón "Aplicar Oferta"
-            btn_aplicar = QPushButton("Aplicar Oferta")
-            btn_aplicar.clicked.connect(self.aplicarOferta)
-            oferta_layout.addWidget(btn_aplicar)
+            btn_aplicar = QPushButton("Aplicar Oferta", self)
+            btn_aplicar.clicked.connect(lambda oferta=oferta: self.aplicarOferta())
+            btn_aplicar.setEnabled(disponible)  # El botón solo está habilitado si la oferta está disponible
+            layout.addWidget(btn_aplicar, row + 3, 0, 1, 2)
 
-            offers_layout.addLayout(oferta_layout)
+            row += 5  # Incrementar el índice de fila para agregar espacio entre las ofertas
 
-        # Agregar el layout de las ofertas al widget contenedor
-        offers_widget.setLayout(offers_layout)
-        layout.addWidget(offers_widget)
-
-        # Agregar un espacio en blanco elástico al final
-        layout.addStretch()
-
-        central_widget = QWidget(self)
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
+        # Crear un widget contenedor y asignar el layout de cuadrícula
+        container_widget = QWidget(self)
+        container_widget.setLayout(layout)
+        self.setCentralWidget(container_widget)
 
     def mostrarMenu(self):
         # Implementa la lógica para mostrar el menú principal aquí
@@ -102,8 +116,32 @@ class Ofertas(QMainWindow):
 
     def aplicarOferta(self):
         # Implementa la lógica para aplicar la oferta aquí
-        print("Oferta aplicada")
+        print(f"Oferta aplicada")
 
+    def ofertas_disponibilidad(self):
+        # Lista de ofertas y disponibilidad
+        return [
+            ("20% en tu primera Revisión", True, "Ven y aprovecha este descuento especial en tu primera revisión.",
+             "20/08/2024", "Aplicable a nuevas reservas hasta la fecha de vencimiento."),
+            ("20% en tu primera vacunación", False, "Lo sentimos, esta oferta no está disponible en este momento.",
+             "N/A", "Válido solo para usuarios premium."),
+            ("15% por visitar la tienda más de 4 veces", True,
+             "¡Obtén un 15% de descuento en cada visita después de tu cuarta vez!",
+             "Indefinido", "Aplicable a todas las visitas después de la cuarta."),
+            ("10% en tu primera cita online", True, "Ahorra tiempo y dinero reservando tu cita online con nosotros.",
+             "10/04/2024", "Válido solo para nuevas reservas en línea.")
+        ]
+
+    def calcular_progreso(self, fecha_vencimiento):
+        if fecha_vencimiento == 'Indefinido':
+            return 100  # Oferta con fecha de vencimiento indefinida, progreso 100%
+        else:
+            fecha_vencimiento_obj = datetime.strptime(fecha_vencimiento, '%d/%m/%Y')
+            fecha_actual = datetime.now()
+            tiempo_restante = fecha_vencimiento_obj - fecha_actual
+            tiempo_total = fecha_vencimiento_obj - fecha_vencimiento_obj.replace(month=1, day=1)
+            progreso = int((tiempo_total - tiempo_restante).total_seconds() / tiempo_total.total_seconds() * 100)
+            return max(0, min(progreso, 100))
 
 def main():
     app = QApplication(sys.argv)

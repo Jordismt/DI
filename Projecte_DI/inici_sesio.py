@@ -4,26 +4,33 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 import json
 from menu import *
-from inici import *
-from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 class Inici_Sesion(QMainWindow):
+
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('HealtMate - Iniciar sesión/Registrarse')
+        self.setWindowTitle('HealthMate - Iniciar sesión/Registrarse')
         self.setGeometry(250, 250, 650, 250)
         self.setStyleSheet(
-            "background-color: rgb(70, 130, 180); font-size: 14px; font-family: Arial; color: #333333;"
+            '''
+            background-color: rgb(70, 130, 180); 
+            font-size: 14px; 
+            font-family: Arial; 
+            color: white;
+            '''
         )
         self.users = self.load_users()  # Cargar usuarios desde el archivo JSON
         self.initUI()
 
 
     def initUI(self):
+        botones_layout = QHBoxLayout()
+
         self.label_username = QLabel('Usuario:', self)
+        self.label_username.setStyleSheet("color: white;")
         self.label_password = QLabel('Contraseña:', self)
+        self.label_password.setStyleSheet("color: white;")
 
         self.input_username = QLineEdit(self)
         self.input_password = QLineEdit(self)
@@ -34,30 +41,39 @@ class Inici_Sesion(QMainWindow):
         self.btn_toggle_password.setCheckable(True)
         self.btn_toggle_password.toggled.connect(self.toggle_password_visibility)
 
-        self.btn_google = QPushButton(self)
-        self.btn_google.setIcon(QIcon("Projecte_DI/images/google.png"))
-        self.btn_google.clicked.connect(self.google_login)
+        # Crear QLabel para la imagen de Google
+        self.google_image_label = QLabel(self)
+        pixmap = QPixmap("Projecte_DI/images/google.png")
+        self.google_image_label.setPixmap(pixmap.scaledToWidth(50))  # Ajustar el tamaño de la imagen
+        self.google_image_label.setAlignment(Qt.AlignCenter)
+        self.google_image_label.mousePressEvent = self.show_coming_soon_popup  # Conectar evento de clic
 
         self.btn_login = QPushButton('Iniciar Sesión', self)
+        self.btn_login.setStyleSheet("background-color: white; color: rgb(70, 130, 180); font-size: 14px;")
         self.btn_login.clicked.connect(self.login)
 
         self.btn_register = QPushButton('Registrarse', self)
+        self.btn_register.setStyleSheet("background-color: white; color: rgb(70, 130, 180); font-size: 14px;")
         self.btn_register.clicked.connect(self.register)
+
+        botones_layout.addWidget(self.btn_login)
+        botones_layout.addWidget(self.btn_register)
 
         # Botón para volver atrás
         self.btn_back = QPushButton('Volver atrás', self)
+        self.btn_back.setStyleSheet("background-color: white; color: rgb(70, 130, 180); font-size: 14px;")
         self.btn_back.clicked.connect(self.go_back)
 
         layout = QFormLayout()
         layout.addRow(self.label_username, self.input_username)
         layout.addRow(self.label_password, self.create_password_layout())
-        layout.addRow(self.btn_login)
-        layout.addRow(self.btn_register)
-        layout.addRow(self.btn_google)
+        layout.addRow(botones_layout)
+        layout.addRow(self.google_image_label)  # Agregar la QLabel con la imagen de Google
         layout.addRow(self.btn_back)
-
+        layout.setSpacing(20)
         widget = QWidget()
         widget.setLayout(layout)
+        
         self.setCentralWidget(widget)
 
     def create_password_layout(self):
@@ -92,6 +108,9 @@ class Inici_Sesion(QMainWindow):
             QMessageBox.information(self, 'Inicio de Sesión', 'Inicio de Sesión Exitoso')
             self.close()
             self.open_menu()
+            # Guardar el nombre de usuario en un archivo aparte
+            with open('Projecte_DI/datos/temp_username.txt', 'w') as file:
+                file.write(username)
         else:
             QMessageBox.warning(self, 'Inicio de Sesión', 'Usuario o Contraseña Incorrectos')
 
@@ -112,7 +131,7 @@ class Inici_Sesion(QMainWindow):
 
     def addUsuarioInvitado(self):
         username_invitado = "Invitado"
-        password_invitado = "invitado"  # Puedes establecer cualquier contraseña para el invitado
+        password_invitado = "invitado"  
 
         # Añadir el usuario invitado al diccionario de usuarios
         self.users[username_invitado] = {"password": password_invitado}
@@ -120,9 +139,8 @@ class Inici_Sesion(QMainWindow):
         # Guardar el diccionario actualizado en el archivo JSON
         self.save_users()
 
-    def google_login(self):
-        # Fer duncio per iniciar secio en google
-        pass
+    def show_coming_soon_popup(self, event):
+        QMessageBox.information(self, 'Próximamente', 'Disponible próximamente')
 
     def go_back(self):
         self.close()

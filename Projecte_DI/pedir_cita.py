@@ -1,3 +1,4 @@
+import os
 import sys
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
@@ -22,6 +23,7 @@ class PedirCita(QMainWindow):
         # Añadir un cuadro de texto para mostrar las citas
         self.cuadro_texto = QTextEdit(self)
         self.cuadro_texto.setReadOnly(True)
+        self.cuadro_texto.setStyleSheet("background-color: rgb(0, 0, 100); color: rgb(70, 130, 180); border: 2px solid rgb(70, 130, 180); padding: 10px;")
 
         # Crear un layout vertical para organizar las etiquetas y widgets
         layout = QVBoxLayout()
@@ -29,6 +31,8 @@ class PedirCita(QMainWindow):
         # Agregar un QLabel para el título
         texto_perfil = QLabel("Pedir Cita", self)
         texto_perfil.setAlignment(Qt.AlignCenter)
+        texto_perfil.setStyleSheet("font-size: 24px; color: white; margin-bottom: 20px;")
+
         layout.addWidget(texto_perfil)
 
         # Crear los QComboBox para seleccionar el tipo de mascota y el servicio
@@ -50,6 +54,8 @@ class PedirCita(QMainWindow):
         # Agregar botón para eliminar el texto del cuadro de texto
         self.btn_limpiar_texto = QPushButton('Eliminar citas', self)
         self.btn_limpiar_texto.clicked.connect(self.limpiarTexto)
+        self.btn_limpiar_texto.setStyleSheet("background-color: rgb(255, 255, 255); color: rgb(70, 130, 180); border: 2px solid rgb(70, 130, 180); padding: 10px;")
+
         vbox.addWidget(self.btn_limpiar_texto)
 
         # Agregar el cuadro de texto al QHBoxLayout
@@ -74,6 +80,8 @@ class PedirCita(QMainWindow):
         # Agregar botón para volver al menú
         self.btn_volver_menu = QPushButton('Volver al Menú', self)
         self.btn_volver_menu.clicked.connect(self.mostrarMenu)
+        self.btn_volver_menu.setStyleSheet("background-color: rgb(255, 255, 255); color: rgb(70, 130, 180); border: 2px solid rgb(70, 130, 180); padding: 10px;")
+
         layout.addWidget(self.btn_volver_menu, alignment=Qt.AlignTop | Qt.AlignLeft)
     
         # Conectar la señal clicked del botón de pedir cita a la función para restablecer las opciones por defecto
@@ -95,11 +103,19 @@ class PedirCita(QMainWindow):
 
         # Verificar si las opciones seleccionadas no son las opciones por defecto
         if tipo_mascota != "Tipo de mascota" and servicio != "Seleccione servicio":
-            # Agregar la cita al cuadro de texto incluyendo las opciones seleccionadas
-            texto_cita = f'·Cita agendada para el día {fecha.toString("dd-MM-yyyy")} por el usuario {usuario}.'
+            # Abrir el archivo que contiene el nombre de usuario
+            try:
+                with open('Projecte_DI/datos/temp_username.txt', 'r') as file:
+                    nombre_usuario = file.read()
+            except FileNotFoundError:
+                nombre_usuario = "Usuario Desconocido"
+
+            # Agregar la cita al cuadro de texto incluyendo las opciones seleccionadas y el nombre del usuario
+            texto_cita = f'·Cita agendada para el día {fecha.toString("dd-MM-yyyy")} por el usuario {nombre_usuario}.'
             texto_cita += f'\n --Tipo de mascota: {tipo_mascota}'
             texto_cita += f'\n --Servicio seleccionado: {servicio}\n'
             self.cuadro_texto.append(texto_cita)
+
         else:
             # Mostrar un mensaje de error en caso de que las opciones seleccionadas sean las por defecto
             QMessageBox.warning(self, "Error", "Por favor seleccione un tipo de mascota y un servicio antes de pedir cita.")
