@@ -41,7 +41,7 @@ class Inici(QMainWindow):
         layout.addWidget(logo_label)
         layout.addStretch()  # Añadir espacio para separar los botones y ponerlos al final
 
-        # Botón para iniciar sesión
+
         btn_login = QPushButton('Iniciar Sesión/Registrarse', self)
         btn_login.setStyleSheet("background-color: blue; color: white; font-size: 16px;")
         layout.addWidget(btn_login)
@@ -49,7 +49,7 @@ class Inici(QMainWindow):
         btn_login.setMinimumHeight(50)  
         btn_login.clicked.connect(self.showInici)
 
-        # Botón para acceder como invitado
+
         btn_guest = QPushButton('Acceder como Invitado', self)
         btn_guest.setStyleSheet("background-color: blue; color: white; font-size: 16px;")
         layout.addWidget(btn_guest)
@@ -57,7 +57,7 @@ class Inici(QMainWindow):
         btn_guest.setMinimumHeight(50)  
         btn_guest.clicked.connect(self.showMainMenu)
 
-        # Ajustar botones al centro
+
         layout.setAlignment(Qt.AlignHCenter)
 
     def showInici(self):

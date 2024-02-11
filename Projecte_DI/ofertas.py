@@ -110,12 +110,9 @@ class Ofertas(QMainWindow):
         self.setCentralWidget(container_widget)
 
     def mostrarMenu(self):
-        # Implementa la lógica para mostrar el menú principal aquí
-        print("Mostrar menú principal")
         self.close()
 
     def aplicarOferta(self):
-        # Implementa la lógica para aplicar la oferta aquí
         print(f"Oferta aplicada")
 
     def ofertas_disponibilidad(self):
@@ -134,7 +131,7 @@ class Ofertas(QMainWindow):
 
     def calcular_progreso(self, fecha_vencimiento):
         if fecha_vencimiento == 'Indefinido':
-            return 100  # Oferta con fecha de vencimiento indefinida, progreso 100%
+            return 0  
         else:
             fecha_vencimiento_obj = datetime.strptime(fecha_vencimiento, '%d/%m/%Y')
             fecha_actual = datetime.now()

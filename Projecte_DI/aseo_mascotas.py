@@ -50,21 +50,18 @@ class VentanaAseo(QWidget):
         self.setLayout(layout)
 
     def estilo_botones(self, botones):
-        """Establece el estilo de los botones."""
         for boton in botones:
             boton.setStyleSheet("background-color: #3498db; color: white; font-weight: bold; padding: 10px; border-radius: 10px;")
             boton.setIconSize(QSize(48, 48))
             boton.setCursor(Qt.PointingHandCursor)
 
     def mostrar_cuadro_otro(self, texto):
-        """Muestra el cuadro de texto para especificar el tipo de mascota si se selecciona 'Otros'."""
         if texto == 'Otros':
             self.cuadro_otro.setVisible(True)
         else:
             self.cuadro_otro.setVisible(False)
 
     def mostrar_dialogo_reserva(self, servicio):
-        """Muestra un diálogo para realizar la reserva del servicio."""
         dialogo_reserva = QDialog(self)
         dialogo_reserva.setWindowTitle(f'Reservar {servicio}')
         dialogo_reserva.setFixedSize(300, 200)
@@ -106,15 +103,12 @@ class VentanaAseo(QWidget):
 
 
     def reservar_corte_uñas(self):
-        #Reserva el servicio de corte de uñas.
         self.mostrar_dialogo_reserva('Corte de Uñas')
 
     def reservar_lavado(self):
-        #Reserva el servicio de lavado.
         self.mostrar_dialogo_reserva('Lavado')
 
     def reservar_corte_pelo(self):
-        #Reserva el servicio de corte de pelo.
         self.mostrar_dialogo_reserva('Corte de Pelo')
 
 

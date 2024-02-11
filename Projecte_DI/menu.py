@@ -107,24 +107,24 @@ class Menu(QMainWindow):
         scroll_layout.addWidget(self.createSection("Pedir Cita", "Projecte_DI/images/foto_menu1.png", self.abrirVentanaPedirCita))
         scroll_layout.addWidget(self.createSection("Ofertas", "Projecte_DI/images/foto_menu2.png", self.abrirVentanaOfertas))
 
-        # Redimensionar la imagen Tienda
+        # Redimensionar la imagen 
         image_path_tienda = "Projecte_DI/images/tienda.jpeg"
         pixmap_tienda = QPixmap(image_path_tienda)
         small_pixmap_tienda = pixmap_tienda.scaled(250, 250) 
         scroll_layout.addWidget(self.createSection("Tienda", small_pixmap_tienda, self.abrirVentanaTienda))
 
-        # Redimencionar imagen adoptar mascota
+
         image_path_adopcio= "Projecte_DI/images/adopcio.jpeg"
         pixmap_adopcio=QPixmap(image_path_adopcio)
         small_pixmap_adopcio=pixmap_adopcio.scaled(255,255)
         scroll_layout.addWidget(self.createSection("Adoptar Mascota", small_pixmap_adopcio, self.abrirVentanaAdopcio))
 
 
+        image_path_aseo= "Projecte_DI/images/aseo_mascota.jpeg"
+        pixmap_aseo=QPixmap(image_path_aseo)
+        small_pixmap_aseo=pixmap_aseo.scaled(255,255)
+        scroll_layout.addWidget(self.createSection("Aseo Mascotas", small_pixmap_aseo, self.abrirVentanaAseo))
 
-
-        btn_aseo=QPushButton("Cuidado Mascotas")
-        btn_aseo.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
-        btn_aseo.clicked.connect(self.abrirVentanaAseo)
 
         btn_opiniones=QPushButton("Opiniones")
         btn_opiniones.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
@@ -135,7 +135,6 @@ class Menu(QMainWindow):
         btn_forum.clicked.connect(self.abrirVentanaForo)
 
 
-        scroll_layout.addWidget(btn_aseo)
         scroll_layout.addWidget(btn_opiniones)
         scroll_layout.addWidget(btn_forum)
 
@@ -227,7 +226,7 @@ class Menu(QMainWindow):
         footer_widget = self.createFooter()
         layout.addWidget(footer_widget)
 
-    def createSection(self, title, image_path_tienda, click_handler):
+    def createSection(self, title, image_path, click_handler):
         section_layout = QVBoxLayout()
 
         font = QFont() 
@@ -241,7 +240,7 @@ class Menu(QMainWindow):
         section_layout.addWidget(section_label)
 
         image_label = QLabel(self)
-        image_label.setPixmap(QPixmap(image_path_tienda))
+        image_label.setPixmap(QPixmap(image_path))
         image_label.setAlignment(Qt.AlignCenter)
         image_label.setObjectName("imageLabel")
 

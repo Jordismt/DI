@@ -15,7 +15,7 @@ class OpinionWindow(QDialog):
     def initUI(self):
         layout = QVBoxLayout(self)
         
-        # Texto de ejemplo con algunas opiniones predefinidas
+        # Texto de ejemplo
         opiniones = [
             {"nombre": "María", "fecha": "2024-02-10", "contenido": "Excelente tienda, siempre encuentro lo que necesito para mis mascotas.", "sobre": "Variedad de productos"},
             {"nombre": "Juan", "fecha": "2024-02-11", "contenido": "La aplicación es muy fácil de usar y el proceso de compra es rápido.", "sobre": "Funcionalidad de la aplicación"},

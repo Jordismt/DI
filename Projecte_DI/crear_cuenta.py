@@ -6,7 +6,7 @@ class VentanaCrearCuenta(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Crear Compte')
-        self.setFixedSize(400, 200)  # Augmentar la mida de la finestra
+        self.setFixedSize(400, 200)  
         self.setStyleSheet(
             '''
             QDialog {
