@@ -8,6 +8,8 @@ from pedir_cita import PedirCita
 from perfil import Perfil
 from opiniones import OpinionWindow
 from foro_comunity import CommunityForum
+from Adopcion import VentanaAdopcion
+from aseo_mascotas import VentanaAseo
 
 class Menu(QMainWindow):
     def __init__(self):
@@ -20,6 +22,9 @@ class Menu(QMainWindow):
         self.tienda = TiendaApp()
         self.opinion=OpinionWindow()
         self.foro=CommunityForum()
+        self.adopcio=VentanaAdopcion()
+        self.aseo=VentanaAseo()
+
         self.setStyleSheet(
             '''
             QMainWindow {
@@ -102,13 +107,24 @@ class Menu(QMainWindow):
         scroll_layout.addWidget(self.createSection("Pedir Cita", "Projecte_DI/images/foto_menu1.png", self.abrirVentanaPedirCita))
         scroll_layout.addWidget(self.createSection("Ofertas", "Projecte_DI/images/foto_menu2.png", self.abrirVentanaOfertas))
 
-        # Redimensionar la imagen a un tamaño específico
-        image_path = "Projecte_DI/images/tienda.jpeg"
-        pixmap = QPixmap(image_path)
-        small_pixmap = pixmap.scaled(250, 250)  # Redimensionar a 100x100 píxeles (ancho x alto)
+        # Redimensionar la imagen Tienda
+        image_path_tienda = "Projecte_DI/images/tienda.jpeg"
+        pixmap_tienda = QPixmap(image_path_tienda)
+        small_pixmap_tienda = pixmap_tienda.scaled(250, 250) 
+        scroll_layout.addWidget(self.createSection("Tienda", small_pixmap_tienda, self.abrirVentanaTienda))
 
-        # Agregar la imagen al widget
-        scroll_layout.addWidget(self.createSection("Tienda", small_pixmap, self.abrirVentanaTienda))
+        # Redimencionar imagen adoptar mascota
+        image_path_adopcio= "Projecte_DI/images/adopcio.jpeg"
+        pixmap_adopcio=QPixmap(image_path_adopcio)
+        small_pixmap_adopcio=pixmap_adopcio.scaled(255,255)
+        scroll_layout.addWidget(self.createSection("Adoptar Mascota", small_pixmap_adopcio, self.abrirVentanaAdopcio))
+
+
+
+
+        btn_aseo=QPushButton("Cuidado Mascotas")
+        btn_aseo.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
+        btn_aseo.clicked.connect(self.abrirVentanaAseo)
 
         btn_opiniones=QPushButton("Opiniones")
         btn_opiniones.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
@@ -118,8 +134,11 @@ class Menu(QMainWindow):
         btn_forum.setStyleSheet("padding:10px; margin:auto ; background-color: blue; color: white; ")
         btn_forum.clicked.connect(self.abrirVentanaForo)
 
+
+        scroll_layout.addWidget(btn_aseo)
         scroll_layout.addWidget(btn_opiniones)
         scroll_layout.addWidget(btn_forum)
+
 
         scroll_area.setWidget(scroll_content)
         layout.addWidget(scroll_area)
@@ -160,6 +179,10 @@ class Menu(QMainWindow):
         action_opiniones.setShortcut('Ctrl+M')
         action_foro=QAction("Foro", self)
         action_foro.setShortcut("Ctrl+F")
+        action_adopcion=QAction("Adopcion", self)
+        action_adopcion.setShortcut("Ctrl+Z")
+        action_cuidado=QAction("Cuidado Mascotas", self)
+        action_cuidado.setShortcut("Ctrl+C")
 
         action_pedir_cita.triggered.connect(self.abrirVentanaPedirCita)
         action_perfil.triggered.connect(self.abrirVentanaPerfil)
@@ -167,7 +190,8 @@ class Menu(QMainWindow):
         action_tienda.triggered.connect(self.abrirVentanaTienda)
         action_opiniones.triggered.connect(self.abrirVentanaOpiniones)
         action_foro.triggered.connect(self.abrirVentanaForo)
-
+        action_adopcion.triggered.connect(self.abrirVentanaAdopcio)
+        action_cuidado.triggered.connect(self.abrirVentanaAseo)
 
         popup_menu.addAction(action_pedir_cita)
         popup_menu.addAction(action_ofertas)
@@ -175,6 +199,8 @@ class Menu(QMainWindow):
         popup_menu.addAction(action_tienda)
         popup_menu.addAction(action_opiniones)
         popup_menu.addAction(action_foro)
+        popup_menu.addAction(action_adopcion)
+        popup_menu.addAction(action_cuidado)
 
         popup_menu.addSeparator()
         popup_menu.addAction(exit_action)
@@ -197,7 +223,11 @@ class Menu(QMainWindow):
 
         self.adjustMenuHeight(popup_menu)
 
-    def createSection(self, title, image_path, click_handler):
+        # Footer
+        footer_widget = self.createFooter()
+        layout.addWidget(footer_widget)
+
+    def createSection(self, title, image_path_tienda, click_handler):
         section_layout = QVBoxLayout()
 
         font = QFont() 
@@ -211,7 +241,7 @@ class Menu(QMainWindow):
         section_layout.addWidget(section_label)
 
         image_label = QLabel(self)
-        image_label.setPixmap(QPixmap(image_path))
+        image_label.setPixmap(QPixmap(image_path_tienda))
         image_label.setAlignment(Qt.AlignCenter)
         image_label.setObjectName("imageLabel")
 
@@ -261,9 +291,17 @@ class Menu(QMainWindow):
     def abrirVentanaForo(self, event):
         self.foro.show()
 
+    def abrirVentanaAdopcio(self, event):
+        self.adopcio.show()
+
+    def abrirVentanaAseo(self, event):
+        self.aseo.show()
+
+
     def adjustMenuHeight(self, menu):
         menu_height = self.height() - self.menuBar().height() - 2
         menu.setFixedHeight(menu_height)
+
 
     def mostrarAyudaPedirCita(self):
         ayuda = "Instrucciones para pedir una cita: \n\n1. Selecciona la opción 'Pedir Cita' del menú.\n2. Completa el formulario con tus datos personales y la fecha/hora deseada.\n3. Confirma la cita para finalizar el proceso."
@@ -272,6 +310,43 @@ class Menu(QMainWindow):
     def mostrarAyudaCrearCuenta(self):
         ayuda = "Instrucciones para crear una cuenta: \n\n1. Selecciona la opción 'Crear Cuenta' del menú.\n2. Completa el formulario con tu información personal.\n3. Verifica tu dirección de correo electrónico.\n4. ¡Listo! Ya puedes acceder a tu perfil y otras funcionalidades."
         QMessageBox.information(self, 'Ayuda al Crear Cuenta', ayuda)
+
+
+    def createFooter(self):
+        footer_widget = QWidget()
+        layout = QHBoxLayout()
+
+        # Espacio flexible para centrar las imágenes
+        layout.addStretch()
+
+        # YouTube image
+        youtube_label = QLabel()
+        youtube_pixmap = QPixmap("Projecte_DI/images/youtube.png")  
+        youtube_label.setPixmap(youtube_pixmap.scaledToWidth(30))  #Ancho de la imagen
+        layout.addWidget(youtube_label)
+
+        # Instagram image
+        instagram_label = QLabel()
+        instagram_pixmap = QPixmap("Projecte_DI/images/instagram.png")  
+        instagram_label.setPixmap(instagram_pixmap.scaledToWidth(30))  
+        instagram_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(instagram_label)
+
+        tiktok_label=QLabel()
+        tiktok_pixmap=QPixmap("Projecte_DI/images/tiktok.png")
+        tiktok_label.setPixmap(tiktok_pixmap.scaledToWidth(30))
+        tiktok_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(tiktok_label)
+
+
+        # Espacio flexible para centrar las imágenes
+        layout.addStretch()
+
+        footer_widget.setLayout(layout)
+
+        return footer_widget
+
+
 
 def main():
     app = QApplication(sys.argv)
